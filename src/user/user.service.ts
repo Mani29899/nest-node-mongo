@@ -4,29 +4,30 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument  ,} from './entities/user.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { USERS } from 'src/constants';
 
 @Injectable()
 export class UserService {
    
-  constructor(@InjectModel(User.name) private readonly userModel:Model<UserDocument>) {}
+  constructor(@InjectModel(USERS) private readonly userModel:Model<UserDocument>) {}
 
   create(createUserDto: CreateUserDto) {
     return this.userModel.create({...createUserDto});
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.userModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string) {
+    return this.userModel.findOne({_id:id});
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.userModel.updateOne({_id:id} , {...updateUserDto})
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id: string) {
+    return this.userModel.deleteOne({_id:id});
   }
 }

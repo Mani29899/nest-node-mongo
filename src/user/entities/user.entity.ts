@@ -4,6 +4,7 @@ import { Document } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 import { Type } from 'class-transformer';
 import { Client } from '../../client/entities/client.entity';
+import { CLIENTS, CLIENT_ID, USERS } from 'src/constants';
 
 export type UserDocument = User & Document;
 
@@ -14,6 +15,7 @@ export type UserDocument = User & Document;
   },
   timestamps: true,
 })
+
 export class User {
   @Prop({
     type: String,
@@ -33,6 +35,12 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
+  @Prop({required:true})
+  age:number
+
+  @Prop({required:true})
+  ratings:Ratings;
+
   @Prop({ required: false })
   clientId?: string;
 
@@ -44,11 +52,14 @@ export class User {
 
 }
 
+// /ratings for the user
+export type Ratings = 1 | 2 | 3 | 4 | 5;
+
 export const UserSchema = SchemaFactory.createForClass(User);
 
-UserSchema.virtual('Client', {
-  ref: Client.name,
-  localField: 'clientId',
-  foreignField: 'clientId',
+UserSchema.virtual(CLIENTS, {
+  ref: CLIENTS,
+  localField: CLIENT_ID,
+  foreignField: CLIENT_ID,
   justOne: true,
 });
